@@ -9,8 +9,16 @@ import {
   isHostedUrl,
 } from "./utils";
 
+// In-memory lock to serialize concurrent initialization calls
+let initializationPromise: Promise<HostingConfig | null> | null = null;
+
 export const getOrCreateHostingConfig =
   async (): Promise<HostingConfig | null> => {
+    // If initialization is already in progress, reuse that promise
+    if (initializationPromise) {
+      return initializationPromise;
+    }
+
     const existing = (await puter.kv.get(
       HOSTING_CONFIG_KEY,
     )) as HostingConfig | null;
@@ -19,20 +27,47 @@ export const getOrCreateHostingConfig =
       return { subdomain: existing.subdomain };
     }
 
-    const subdomain = createHostingSlug();
+    // Acquire lock by setting initializationPromise
+    initializationPromise = (async () => {
+      try {
+        // Re-check after acquiring lock in case another call created it
+        const recheck = (await puter.kv.get(
+          HOSTING_CONFIG_KEY,
+        )) as HostingConfig | null;
 
-    try {
-      const created = await puter.hosting.create(subdomain, ".");
+        if (recheck?.subdomain) {
+          return { subdomain: recheck.subdomain };
+        }
 
-      const record = { subdomain: created.subdomain };
+        const subdomain = createHostingSlug();
+        let created;
 
-      await puter.kv.set(HOSTING_CONFIG_KEY, record);
+        try {
+          created = await puter.hosting.create(subdomain, ".");
+        } catch (e) {
+          console.warn(`Failed to create hosting deployment: ${e}`);
+          return null;
+        }
 
-      return record;
-    } catch (e) {
-      console.warn(`Could not find subdomain: ${e}`);
-      return null;
-    }
+        const record = { subdomain: created.subdomain };
+
+        try {
+          await puter.kv.set(HOSTING_CONFIG_KEY, record);
+        } catch (e) {
+          console.warn(
+            `Created hosting deployment ${created.subdomain} but failed to save config to KV - deployment may be orphaned: ${e}`,
+          );
+          return null;
+        }
+
+        return record;
+      } finally {
+        // Release lock
+        initializationPromise = null;
+      }
+    })();
+
+    return initializationPromise;
   };
 
 export const uploadImageToHosting = async ({
