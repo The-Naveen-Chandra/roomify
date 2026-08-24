@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { generate3DView } from "../../lib/ai.action";
-import { Box, Divide, Download, RefreshCcw, Share2, X } from "lucide-react";
+import { Box, Download, RefreshCcw, Share2, X } from "lucide-react";
 import Button from "../../components/ui/Button";
 
 const VisualizerId = () => {
