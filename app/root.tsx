@@ -12,8 +12,8 @@ import "./app.css";
 import { useEffect, useState } from "react";
 import {
   getCurrentUser,
-  SignIn as puterSignIn,
-  SignOut as puterSignOut,
+  signIn as puterSignIn,
+  signOut as puterSignOut,
 } from "../lib/puter.action";
 
 export const links: Route.LinksFunction = () => [
@@ -83,21 +83,13 @@ export default function App() {
   };
 
   const signOut = async () => {
-    await puterSignOut();
+    puterSignOut();
     return await refreshAuth();
   };
 
   return (
     <main className="min-h-screen bg-background text-foreground relative z-10">
-      <Outlet
-        context={{
-          ...authState,
-          refreshAuth,
-          signIn,
-          signOut,
-        }}
-      />
-      ;
+      <Outlet context={{ ...authState, refreshAuth, signIn, signOut }} />;
     </main>
   );
 }
