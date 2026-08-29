@@ -136,7 +136,15 @@ export default function Home() {
                 <div
                   key={id}
                   className="project-card group"
+                  role="button"
+                  tabIndex={0}
                   onClick={() => navigate(`/visualizer/${id}`)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      navigate(`/visualizer/${id}`);
+                    }
+                  }}
                 >
                   <div className="preview">
                     <img src={renderedImage || sourceImage} alt="Project" />
