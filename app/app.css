@@ -197,6 +197,14 @@
     .dropzone {
       @apply relative h-48 rounded-xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center cursor-pointer bg-zinc-50 border-zinc-200 hover:border-zinc-300 hover:bg-zinc-100;
 
+      &.is-disabled {
+        @apply cursor-not-allowed opacity-80 hover:border-zinc-200 hover:bg-zinc-50;
+
+        .drop-input {
+          @apply pointer-events-none cursor-not-allowed;
+        }
+      }
+
       &.is-dragging {
         @apply border-primary bg-orange-50;
 
