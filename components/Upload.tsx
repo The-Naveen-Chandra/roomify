@@ -19,6 +19,12 @@ const Upload = ({ onComplete }: UploadProps) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { isSignedIn } = useOutletContext<AuthContext>();
+  const [ready, setReady] = useState(false);
+  const canUpload = ready && isSignedIn;
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -35,7 +41,7 @@ const Upload = ({ onComplete }: UploadProps) => {
 
   const processFile = useCallback(
     (file: File) => {
-      if (!isSignedIn) return;
+      if (!canUpload) return;
 
       setFile(file);
       setProgress(0);
@@ -68,12 +74,12 @@ const Upload = ({ onComplete }: UploadProps) => {
       };
       reader.readAsDataURL(file);
     },
-    [isSignedIn, onComplete],
+    [canUpload, onComplete],
   );
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    if (!isSignedIn) return;
+    if (!canUpload) return;
     setIsDragging(true);
   };
 
@@ -85,7 +91,7 @@ const Upload = ({ onComplete }: UploadProps) => {
     e.preventDefault();
     setIsDragging(false);
 
-    if (!isSignedIn) return;
+    if (!canUpload) return;
 
     const droppedFile = e.dataTransfer.files[0];
     const allowedTypes = ["image/jpeg", "image/png"];
@@ -95,7 +101,7 @@ const Upload = ({ onComplete }: UploadProps) => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!isSignedIn) return;
+    if (!canUpload) return;
 
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
@@ -107,7 +113,7 @@ const Upload = ({ onComplete }: UploadProps) => {
     <div className="upload">
       {!file ? (
         <div
-          className={`dropzone ${isDragging ? "is-dragging" : ""}`}
+          className={`dropzone ${isDragging ? "is-dragging" : ""} ${canUpload ? "" : "is-disabled"}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -116,7 +122,6 @@ const Upload = ({ onComplete }: UploadProps) => {
             type="file"
             className="drop-input"
             accept=".jpg,.jpeg,.png,.webp"
-            disabled={!isSignedIn}
             onChange={handleChange}
           />
 
@@ -125,11 +130,11 @@ const Upload = ({ onComplete }: UploadProps) => {
               <UploadIcon size={20} />
             </div>
             <p>
-              {isSignedIn
+              {canUpload
                 ? "Click to upload or just drag and drop"
                 : "Sign in or sign up with Puter to upload"}
             </p>
-            <p className="help">Maximum file size 50 MB.</p>
+            <p className="help">Maximum file size 10 MB.</p>
           </div>
         </div>
       ) : (

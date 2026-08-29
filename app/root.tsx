@@ -9,7 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   getCurrentUser,
   signIn as puterSignIn,
@@ -53,8 +53,16 @@ const DEFAULT_AUTH_STATE: AuthState = {
   userId: null,
 };
 
+const subscribeHydration = () => () => {};
+
+function useHydrated() {
+  return useSyncExternalStore(subscribeHydration, () => true, () => false);
+}
+
 export default function App() {
+  const hydrated = useHydrated();
   const [authState, setAuthState] = useState<AuthState>(DEFAULT_AUTH_STATE);
+  const visibleAuth = hydrated ? authState : DEFAULT_AUTH_STATE;
 
   const refreshAuth = async () => {
     try {
@@ -89,7 +97,7 @@ export default function App() {
 
   return (
     <main className="min-h-screen bg-background text-foreground relative z-10">
-      <Outlet context={{ ...authState, refreshAuth, signIn, signOut }} />
+      <Outlet context={{ ...visibleAuth, refreshAuth, signIn, signOut }} />
     </main>
   );
 }
