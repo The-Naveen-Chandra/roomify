@@ -9,6 +9,11 @@ import {
   ReactCompareSliderImage,
 } from "react-compare-slider";
 
+/**
+ * Project visualizer page component for viewing and rendering 3D architectural visualizations.
+ * Allows users to generate, compare, and export rendered floor plans.
+ * @returns The visualizer page component.
+ */
 const VisualizerId = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -22,7 +27,14 @@ const VisualizerId = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
 
+  /**
+   * Navigates back to the home page.
+   */
   const handleBack = () => navigate("/");
+
+  /**
+   * Exports the current rendered image as a downloadable PNG file.
+   */
   const handleExport = () => {
     if (!currentImage) return;
 
@@ -34,6 +46,11 @@ const VisualizerId = () => {
     document.body.removeChild(link);
   };
 
+  /**
+   * Runs the AI generation process to create a 3D visualization from the source image.
+   * Saves the result to the project and updates the UI.
+   * @param item - The design item containing the source image to generate from.
+   */
   const runGeneration = async (item: DesignItem) => {
     if (!id || !item.sourceImage) return;
 

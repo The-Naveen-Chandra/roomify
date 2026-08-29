@@ -1,6 +1,12 @@
 import puter from "@heyputer/puter.js";
 import { ROOMIFY_RENDER_PROMPT } from "./constants";
 
+/**
+ * Fetches an image from a URL and converts it to a base64 data URL.
+ * @param url - The URL of the image to fetch.
+ * @returns A promise that resolves to a base64-encoded data URL string.
+ * @throws Error if the fetch operation fails.
+ */
 export const fetchAsDataUrl = async (url: string): Promise<string> => {
   const response = await fetch(url);
 
@@ -18,6 +24,14 @@ export const fetchAsDataUrl = async (url: string): Promise<string> => {
   });
 };
 
+/**
+ * Generates a 3D architectural visualization from a 2D floor plan using AI.
+ * Uses Puter's AI service with Gemini model to transform the source image.
+ * @param params - The generation parameters.
+ * @param params.sourceImage - The source floor plan image (data URL or URL).
+ * @returns A promise that resolves to an object containing the rendered image and path.
+ * @throws Error if the source image is invalid or generation fails.
+ */
 export const generate3DView = async ({ sourceImage }: Generate3DViewParams) => {
   const dataUrl = sourceImage.startsWith("data")
     ? sourceImage

@@ -9,6 +9,11 @@ import {
   isHostedUrl,
 } from "./utils";
 
+/**
+ * Retrieves or creates a Puter hosting configuration for the application.
+ * Generates a unique subdomain if one doesn't exist and stores it in Puter's key-value store.
+ * @returns A promise that resolves to the hosting config with subdomain, or null on error.
+ */
 export const getOrCreateHostingConfig =
   async (): Promise<HostingConfig | null> => {
     const existing = (await puter.kv.get(
@@ -33,6 +38,16 @@ export const getOrCreateHostingConfig =
     }
   };
 
+/**
+ * Uploads an image to Puter hosting and returns the hosted URL.
+ * Converts rendered images to PNG format and stores them in project-specific directories.
+ * @param params - The upload parameters.
+ * @param params.hosting - The hosting configuration containing the subdomain.
+ * @param params.url - The URL or data URL of the image to upload.
+ * @param params.projectId - The ID of the project this image belongs to.
+ * @param params.label - The type of image ("source" or "rendered").
+ * @returns A promise that resolves to an object with the hosted URL, or null on error.
+ */
 export const uploadImageToHosting = async ({
   hosting,
   url,

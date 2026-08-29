@@ -7,6 +7,10 @@ import { useNavigate } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import { createProject, getProjects } from "../../lib/puter.action";
 
+/**
+ * Defines metadata for the home page route.
+ * @returns An array of metadata objects for the page title and description.
+ */
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
@@ -14,11 +18,20 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
+/**
+ * Home page component displaying the hero section, upload interface, and project gallery.
+ * @returns The home page component.
+ */
 export default function Home() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<DesignItem[]>([]);
   const isCreatingProjectRef = useRef(false);
 
+  /**
+   * Handles the completion of file upload by creating a new project and navigating to the visualizer.
+   * @param base64Image - The uploaded image as a base64 string.
+   * @returns A promise that resolves to true if successful, false otherwise.
+   */
   const handleUploadComplete = async (base64Image: string) => {
     try {
       if (isCreatingProjectRef.current) return false;

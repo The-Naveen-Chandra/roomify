@@ -2,10 +2,18 @@ import { Box } from "lucide-react";
 import Button from "./ui/Button";
 import { useOutletContext } from "react-router";
 
+/**
+ * Navigation bar component with authentication controls.
+ * Displays the Roomify brand, navigation links, and sign in/out functionality.
+ * @returns The navbar component.
+ */
 const Navbar = () => {
   const { isSignedIn, userName, signIn, signOut } =
     useOutletContext<AuthContext>();
 
+  /**
+   * Handles authentication button clicks for both sign in and sign out.
+   */
   const handleAuthClick = async () => {
     if (isSignedIn) {
       try {

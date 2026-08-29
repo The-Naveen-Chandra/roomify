@@ -11,6 +11,13 @@ interface UploadProps {
   onComplete?: (base64Data: string) => void;
 }
 
+/**
+ * File upload component with drag-and-drop support for floor plan images.
+ * Displays upload progress and handles file validation.
+ * @param props - The upload component properties.
+ * @param props.onComplete - Callback function called when upload is complete with base64 data.
+ * @returns The upload component.
+ */
 const Upload = ({ onComplete }: UploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -33,6 +40,10 @@ const Upload = ({ onComplete }: UploadProps) => {
     };
   }, []);
 
+  /**
+   * Processes an uploaded file by reading it as base64 and triggering progress simulation.
+   * @param file - The file to process.
+   */
   const processFile = useCallback(
     (file: File) => {
       if (!isSignedIn) return;
@@ -71,16 +82,27 @@ const Upload = ({ onComplete }: UploadProps) => {
     [isSignedIn, onComplete],
   );
 
+  /**
+   * Handles drag over events for the dropzone.
+   * @param e - The drag event.
+   */
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     if (!isSignedIn) return;
     setIsDragging(true);
   };
 
+  /**
+   * Handles drag leave events for the dropzone.
+   */
   const handleDragLeave = () => {
     setIsDragging(false);
   };
 
+  /**
+   * Handles file drop events and validates the file type.
+   * @param e - The drag event containing the dropped files.
+   */
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -94,6 +116,10 @@ const Upload = ({ onComplete }: UploadProps) => {
     }
   };
 
+  /**
+   * Handles file input change events when user selects a file.
+   * @param e - The change event from the file input.
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isSignedIn) return;
 

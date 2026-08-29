@@ -6,10 +6,21 @@ import {
 import { isHostedUrl } from "./utils";
 import { PUTER_WORKER_URL } from "./constants";
 
+/**
+ * Initiates the Puter authentication sign-in flow.
+ * @returns A promise that resolves when sign-in is complete.
+ */
 export const signIn = async () => await puter.auth.signIn();
 
+/**
+ * Signs out the current user from Puter authentication.
+ */
 export const signOut = () => puter.auth.signOut();
 
+/**
+ * Retrieves the currently authenticated user from Puter.
+ * @returns A promise that resolves to the user object, or null if not authenticated or on error.
+ */
 export const getCurrentUser = async () => {
   try {
     return await puter.auth.getUser();
@@ -18,6 +29,14 @@ export const getCurrentUser = async () => {
   }
 };
 
+/**
+ * Creates a new design project with source and rendered images.
+ * Uploads images to Puter hosting and saves project metadata to the worker API.
+ * @param params - The project creation parameters.
+ * @param params.item - The design item containing project data.
+ * @param params.visibility - The visibility setting for the project (default: "private").
+ * @returns A promise that resolves to the saved project item, or null if creation fails.
+ */
 export const createProject = async ({
   item,
   visibility = "private",
@@ -103,6 +122,10 @@ export const createProject = async ({
   }
 };
 
+/**
+ * Fetches all projects for the current user from the worker API.
+ * @returns A promise that resolves to an array of design items, or an empty array on error.
+ */
 export const getProjects = async () => {
   if (!PUTER_WORKER_URL) {
     console.warn("Missing VITE_PUTER_WORKER_URL; skip history fetch;");
@@ -129,6 +152,12 @@ export const getProjects = async () => {
   }
 };
 
+/**
+ * Fetches a specific project by its ID from the worker API.
+ * @param params - The parameters object.
+ * @param params.id - The unique identifier of the project to fetch.
+ * @returns A promise that resolves to the project item, or null if not found or on error.
+ */
 export const getProjectById = async ({ id }: { id: string }) => {
   if (!PUTER_WORKER_URL) {
     console.warn("Missing VITE_PUTER_WORKER_URL; skipping project fetch.");
