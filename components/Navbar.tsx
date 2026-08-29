@@ -30,11 +30,12 @@ const Navbar = () => {
         <div className="left">
           <div className="brand">
             <Box className="logo" />
+
             <span className="name">Roomify</span>
           </div>
 
           <ul className="links">
-            <a href="#">Products</a>
+            <a href="#">Product</a>
             <a href="#">Pricing</a>
             <a href="#">Community</a>
             <a href="#">Enterprise</a>
@@ -49,16 +50,16 @@ const Navbar = () => {
               </span>
 
               <Button size="sm" onClick={handleAuthClick} className="btn">
-                Log out
+                Log Out
               </Button>
             </>
           ) : (
             <>
               <Button onClick={handleAuthClick} size="sm" variant="ghost">
-                Log in
+                Log In
               </Button>
 
-              <a href="@upload" className="cta">
+              <a href="#upload" className="cta">
                 Get Started
               </a>
             </>

@@ -1,10 +1,10 @@
 import puter from "@heyputer/puter.js";
 import {
-  HOSTING_CONFIG_KEY,
   createHostingSlug,
   fetchBlobFromUrl,
   getHostedUrl,
   getImageExtension,
+  HOSTING_CONFIG_KEY,
   imageUrlToPngBlob,
   isHostedUrl,
 } from "./utils";
@@ -15,9 +15,7 @@ export const getOrCreateHostingConfig =
       HOSTING_CONFIG_KEY,
     )) as HostingConfig | null;
 
-    if (existing?.subdomain) {
-      return { subdomain: existing.subdomain };
-    }
+    if (existing?.subdomain) return { subdomain: existing.subdomain };
 
     const subdomain = createHostingSlug();
 
@@ -42,7 +40,6 @@ export const uploadImageToHosting = async ({
   label,
 }: StoreHostedImageParams): Promise<HostedAsset | null> => {
   if (!hosting || !url) return null;
-
   if (isHostedUrl(url)) return { url };
 
   try {
